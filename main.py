@@ -5,7 +5,26 @@ from telebot.util import async_dec
 
 TELEGRAM_TOKEN = ''
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
-token_access = '12345'
+token_access = ['8kEDz89Km7',
+                'n6MH58Hh7h',
+                'JyxJ3jG373',
+                'vn3zL3D8E3',
+                'G8d4zPN5r5',
+                'X75a5Lx3nA',
+                'g22Pb4MB7b',
+                '2tX4UhvC58',
+                '64igZJ2C7e',
+                'yCULd498n5',
+                '4JypbN896M',
+                'T8Mfk57Lj6',
+                'E7Fj465hyY',
+                '95yKsu62ZX',
+                'h67r2gAUE5',
+                'm8e82M7YRi',
+                '55KgVf58Tv',
+                'pGM2b9Z5d9',
+                'GkiE463iX3',
+                'k9NJ26hvK8']
 
 
 @bot.message_handler(commands=['start'])
@@ -19,6 +38,16 @@ def start_message(message):
                                       'інформатизації імені Героїв Крут '
                                       'Це застосунок для зручного моніторингу навчального розкладу у Вашому телефоні📲')
         bot.send_message(telegram_id, 'Введіть, будь ласка, унікальний токен авторизації 🔐 : ')
+
+
+@bot.message_handler(commands=['restart'])
+def info_message(message):
+    chat_id = message.chat.id
+    user = api.get_user(chat_id)
+    if not user['userStatus']:
+        bot.send_message(chat_id, 'Введіть, будь ласка, унікальний токен авторизації 🔐 : ')
+    else:
+        filter_group(chat_id, True)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -97,7 +126,7 @@ def filter_group(id_telegram, message_id, edit_flag=False):
                 InlineKeyboardButton(text=group_array[i + 1],
                                      callback_data='group:' + group_array[i + 1]))
     inline_keyboard.row(
-        InlineKeyboardButton(text='Продовжити', callback_data='group:continue'),
+        InlineKeyboardButton(text='Не важливо', callback_data='group:continue'),
         InlineKeyboardButton(text='Зберегти', callback_data='group:save'))
     if not edit_flag:
         bot.send_message(id_telegram, 'Виберіть групи (є можливість вибирати декілька)', reply_markup=inline_keyboard)
@@ -131,7 +160,7 @@ def filter_departments(id_telegram, message_id, edit_flag=False):
                     text=departments_array[i + 1]['title'],
                     callback_data='dep:' + departments_array[i + 1]['id']))
     inline_keyboard.row(
-        InlineKeyboardButton(text='Продовжити', callback_data='dep:continue'),
+        InlineKeyboardButton(text='Не важливо', callback_data='dep:continue'),
         InlineKeyboardButton(text='Зберегти', callback_data='dep:save'))
     if not edit_flag:
         bot.send_message(id_telegram, 'Виберіть кафедри', reply_markup=inline_keyboard)
@@ -150,7 +179,7 @@ def filter_numbers_lessons(id_telegram, message_id, edit_flag=False):
         InlineKeyboardButton(text='3 пара', callback_data='number:3'),
         InlineKeyboardButton(text='4 пара', callback_data='number:4'))
     inline_keyboard.row(
-        InlineKeyboardButton(text='Продовжити', callback_data='number:continue'),
+        InlineKeyboardButton(text='Не важливо', callback_data='number:continue'),
         InlineKeyboardButton(text='Зберегти', callback_data='number:save'))
     if not edit_flag:
         bot.send_message(id_telegram, 'Виберіть пари', reply_markup=inline_keyboard)
@@ -175,7 +204,7 @@ def filter_types(id_telegram, message_id, edit_flag=False):
                 InlineKeyboardButton(text=types[i + 1]['typeTitle'],
                                      callback_data='type:' + types[i + 1]['_id']))
     inline_keyboard.row(
-        InlineKeyboardButton(text='Продовжити', callback_data='type:continue'),
+        InlineKeyboardButton(text='Не важливо', callback_data='type:continue'),
         InlineKeyboardButton(text='Зберегти', callback_data='type:save'))
     if not edit_flag:
         bot.send_message(id_telegram, 'Виберіть вид заняття (є можливість вибирати декілька)',
@@ -185,6 +214,7 @@ def filter_types(id_telegram, message_id, edit_flag=False):
         bot.edit_message_reply_markup(id_telegram, message_id, reply_markup=inline_keyboard)
 
 
+@async_dec()
 def search(id_telegram, message_id):
     bot.delete_message(id_telegram, message_id)
     user = api.get_user(id_telegram)
@@ -233,7 +263,7 @@ def send_text(message):
     message_text = message.text
     user = api.get_user(telegram_id)
     if not user['userStatus']:
-        if message_text == token_access:
+        if token_access.__contains__(message_text):
             api.update_field_for_user(telegram_id, True, 'userStatus')
             bot.send_message(telegram_id,
                              'Токен доступу прийнятий, тепер ви можете використовувати повний функціонал боту🔑'
