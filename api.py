@@ -1,6 +1,6 @@
 import requests
 
-link = 'http://192.168.0.75:8989'
+link = 'http://localhost:8989'
 
 
 def get_groups():
